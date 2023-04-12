@@ -1,0 +1,9 @@
+﻿Given this message:
+
+[MESSAGE START]
+{{$input}}
+[MESSAGE END]
+
+Which is the most appropriate classification from this list: 
+
+{{$classifications}}
