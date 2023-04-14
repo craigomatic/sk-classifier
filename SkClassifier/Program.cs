@@ -1,22 +1,25 @@
 ﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.KernelExtensions;
 using Microsoft.SemanticKernel.Orchestration;
 using SkClassifier;
 using SkClassifier.Model;
-using System;
 using System.Reflection;
-using System.Security.Cryptography;
 
-
-//note that currently this is configured to work only with text-davinci-003 (gpt-35-turbo/gpt-4 support will be added also)
 
 //configure your Azure OpenAI backend
 var key = "";
 var endpoint = "";
-var model = "text-davinci-003";
+var label = "gpt-35-turbo";
+var model = "gpt-35-turbo";
 
+//use text completion endpoints by uncommenting this next line and using a model such as text-davinci-003
+//var sk = Kernel.Builder.Configure(c => c.AddAzureOpenAITextCompletionService(model, model, endpoint, key)).Build();
 
-var sk = Kernel.Builder.Configure(c => c.AddAzureOpenAITextCompletionService(model, model, endpoint, key)).Build();
+//configure chat completion using a temporary shim. the main sk project will have better built in support for chat completion soon.
+var sk = Kernel.Builder.Configure(c =>
+    c.AddTextCompletionService(
+        "chat-completion-shim",
+        (kernel) => new AzureOpenAIChatCompletionShim(label, model, endpoint, key))).Build();
+
 const string skillName = "Classifier";
 const string functionName = "ClassifyPrompt";
 
