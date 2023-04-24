@@ -7,3 +7,5 @@
 Which is the most appropriate classification from this list: 
 
 {{$classifications}}
+
+Return valid json in the form: {"classification":"<classification from the list>", "reason":"<reason for the classification>"}

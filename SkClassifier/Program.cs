@@ -8,17 +8,20 @@ using System.Reflection;
 //configure your Azure OpenAI backend
 var key = "";
 var endpoint = "";
-var label = "gpt-35-turbo";
 var model = "gpt-35-turbo";
 
 //use text completion endpoints by uncommenting this next line and using a model such as text-davinci-003
 //var sk = Kernel.Builder.Configure(c => c.AddAzureOpenAITextCompletionService(model, model, endpoint, key)).Build();
 
-//configure chat completion using a temporary shim. the main sk project will have better built in support for chat completion soon.
+//use chat completion
 var sk = Kernel.Builder.Configure(c =>
-    c.AddTextCompletionService(
-        "chat-completion-shim",
-        (kernel) => new AzureOpenAIChatCompletionShim(label, model, endpoint, key))).Build();
+        c.AddAzureChatCompletionService(
+            "chat-completion",
+            model, 
+            endpoint, 
+            key, 
+            true))
+    .Build();
 
 const string skillName = "Classifier";
 const string functionName = "ClassifyPrompt";
