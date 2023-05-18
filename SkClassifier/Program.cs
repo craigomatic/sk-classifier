@@ -16,12 +16,19 @@ var model = "gpt-35-turbo";
 //use chat completion
 var sk = Kernel.Builder.Configure(c =>
         c.AddAzureChatCompletionService(
-            "chat-completion",
             model, 
             endpoint, 
             key, 
             true))
     .Build();
+
+//use open AI by uncommenting this next line and commenting out the Kernel.Builder.Configure(...).Build() above
+//var sk = Kernel.Builder.Configure(c =>
+//        c.AddOpenAIChatCompletionService(
+//            model,
+//            key,
+//            alsoAsTextCompletion: true))
+//    .Build();
 
 const string skillName = "Classifier";
 const string functionName = "ClassifyPrompt";
@@ -44,18 +51,18 @@ var toClassify = new[]
 {
     new PromptHistory
     {
-        Id = Guid.NewGuid().ToString(),
-        Message = "I ate some Pizza yesterday that was out of this world!"
+       Id = Guid.NewGuid().ToString(),
+       Message = "I ate some Pizza yesterday that was out of this world!"
     },
     new PromptHistory
     {
-        Id = Guid.NewGuid().ToString(),
-        Message = "can you help me plan a trip to hawaii?"
+       Id = Guid.NewGuid().ToString(),
+       Message = "can you help me plan a trip to hawaii?"
     },
     new PromptHistory
     {
-        Id = Guid.NewGuid().ToString(),
-        Message = "Why do racoons only come out at night?"
+       Id = Guid.NewGuid().ToString(),
+       Message = "Why do racoons only come out at night?"
     }
 };
 
@@ -66,9 +73,7 @@ foreach (var item in toClassify)
     contextVariables.Set("classifications", string.Join("\n", classifications));
     contextVariables.Set("default", "No match");
     
-    var classificationResult = await sk.RunAsync(contextVariables, sk.Skills.GetSemanticFunction(skillName, functionName));
+    var classificationResult = await sk.RunAsync(contextVariables, sk.Skills.GetFunction(skillName, functionName));
 
     Console.WriteLine($"[{classificationResult.Result.Trim()}] {item.Message}");
 }
-
-
